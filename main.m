@@ -161,3 +161,42 @@ write_annotation(dil_annot_name,0:(length(new_annotLabs_lh)-1),new_annotLabs_lh,
 
 dil_annot_name = strcat(pwd,'/rh.yeo17dil.annot') ;
 write_annotation(dil_annot_name,0:(length(new_annotLabs_rh)-1),new_annotLabs_rh,annotTable)
+
+%% make one with nice lil edges 
+
+% find the borders  
+% function [ border_weights ] = get_parc_borders(parc_weights,nbrs,fill_wei) 
+% w_dil_bord_lh = get_parc_borders(w_dil_lh, n_lh.nbrs, 1) ;
+% w_dil_bord_rh = get_parc_borders(w_dil_rh, n_rh.nbrs, 1) ;
+
+% find the edges
+% function [ edge_verts ] = get_parc_edges(vert_weights,nbrs)
+w_dil_edge_lh = get_parc_edges(w_dil_lh,n_lh.nbrs) ;
+w_dil_edge_rh = get_parc_edges(w_dil_rh,n_rh.nbrs) ;
+
+w_dil_lh_2 = w_dil_lh .* 1 ;
+w_dil_rh_2 = w_dil_rh .* 1 ;
+w_dil_lh_2(~~w_dil_edge_lh) = 1 ; 
+w_dil_rh_2(~~w_dil_edge_rh) = 1 ; 
+
+
+new_annotLabs_lh = ones(length(annotLabs_lh),1);
+for idx = 1:size(annotTable.table,1)
+    disp(idx)
+    new_annotLabs_lh(w_dil_lh_2 == idx) = annotTable.table(idx,5);
+end
+
+new_annotLabs_rh = ones(length(annotLabs_rh),1);
+for idx = 1:size(annotTable.table,1)
+    disp(idx)
+    new_annotLabs_rh(w_dil_rh_2 == idx) = annotTable.table(idx,5);
+end
+
+dil_annot_name = strcat(pwd,'/lh.yeo17dil_wBord.annot') ;
+write_annotation(dil_annot_name,0:(length(new_annotLabs_lh)-1),new_annotLabs_lh,annotTable)
+
+dil_annot_name = strcat(pwd,'/rh.yeo17dil_wBord.annot') ;
+write_annotation(dil_annot_name,0:(length(new_annotLabs_rh)-1),new_annotLabs_rh,annotTable)
+
+
+
